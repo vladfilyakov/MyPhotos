@@ -124,17 +124,29 @@ extension ViewController: UICollectionViewDataSource {
 extension ViewController: UICollectionViewDelegateFlowLayout {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         //!!!
-        if scrollView.contentOffset.y > scrollView.contentSize.height - 2 * scrollView.frame.height {
-            let markPoint = CGPoint(x: 0, y: scrollView.contentOffset.y - 2 * scrollView.frame.height)
+        if scrollView.contentSize == .zero {
+            return
+        }
 
-            if let indexPath = photosView.indexPathForItem(at: markPoint),
-                let attributes = photosView.layoutAttributesForItem(at: indexPath) {
+        let contentOffsetBuffer = 2 * scrollView.frame.height
 
+        if scrollView.contentOffset.y < contentOffsetBuffer {
+
+        }
+
+        if scrollView.contentOffset.y > scrollView.contentSize.height - contentOffsetBuffer {
+            let markPoint = CGPoint(x: 0, y: scrollView.contentOffset.y - contentOffsetBuffer)
+            // Alternative point for cases when original one gets into space between items
+            let alternativeMarkPoint = CGPoint(x: markPoint.x, y: markPoint.y + photosLayout.minimumLineSpacing)
+
+            let markIndexPath = photosView.indexPathForItem(at: markPoint) ?? photosView.indexPathForItem(at: alternativeMarkPoint)
+
+            if let indexPath = markIndexPath, let attributes = photosView.layoutAttributesForItem(at: indexPath) {
                 markIndex += indexPath.item
-
                 scrollView.contentOffset.y -= attributes.frame.minY
-
                 photosView.reloadData()
+            } else {
+                fatalError()
             }
         }
     }
