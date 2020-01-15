@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A51EDBF123C80BE8004BD91A /* Photos.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51EDBF023C80BE8004BD91A /* Photos.swift */; };
 		A5E9BB9023C66E55008BAC1D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E9BB8F23C66E55008BAC1D /* AppDelegate.swift */; };
 		A5E9BB9223C66E55008BAC1D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E9BB9123C66E55008BAC1D /* SceneDelegate.swift */; };
 		A5E9BB9423C66E55008BAC1D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E9BB9323C66E55008BAC1D /* ViewController.swift */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A51EDBF023C80BE8004BD91A /* Photos.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photos.swift; sourceTree = "<group>"; };
 		A5E9BB8C23C66E55008BAC1D /* MyPhotos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyPhotos.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5E9BB8F23C66E55008BAC1D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A5E9BB9123C66E55008BAC1D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -60,6 +62,7 @@
 		A5E9BB8E23C66E55008BAC1D /* MyPhotos */ = {
 			isa = PBXGroup;
 			children = (
+				A51EDBF023C80BE8004BD91A /* Photos.swift */,
 				A5E9BB8F23C66E55008BAC1D /* AppDelegate.swift */,
 				A5E9BB9123C66E55008BAC1D /* SceneDelegate.swift */,
 				A5E9BB9323C66E55008BAC1D /* ViewController.swift */,
@@ -144,6 +147,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A51EDBF123C80BE8004BD91A /* Photos.swift in Sources */,
 				A5E9BBA623C6ADD7008BAC1D /* Extensions.swift in Sources */,
 				A5E9BBA423C699C3008BAC1D /* PhotosLayout.swift in Sources */,
 				A5E9BB9423C66E55008BAC1D /* ViewController.swift in Sources */,

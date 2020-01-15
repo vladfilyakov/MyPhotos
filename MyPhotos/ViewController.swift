@@ -38,7 +38,9 @@ class ViewController: UIViewController {
 
     }
 
-    private let photosView = UICollectionView(frame: .zero, collectionViewLayout: PhotosLayout())
+    private let photos = Photos()
+
+    private lazy var photosView = UICollectionView(frame: .zero, collectionViewLayout: PhotosLayout(photos: photos))
     private var photosLayout: PhotosLayout {
         guard let photosLayout = photosView.collectionViewLayout as? PhotosLayout else {
             fatalError("Collection view has a wrong layout class")
@@ -57,7 +59,11 @@ class ViewController: UIViewController {
         }
     }
 
-    private var markIndex: Int = 0
+    private var anchorIndex: Int = 0 {
+        didSet {
+            photosLayout.anchorIndex = anchorIndex
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -112,8 +118,8 @@ extension ViewController: UICollectionViewDataSource {
             return label
         }()
 
-        let actualIndex = markIndex + indexPath.item
-        label.text = "\(actualIndex)"
+        let actualIndex = anchorIndex + indexPath.item
+        label.text = photos.captionForItem(at: actualIndex)
 
         return cell
     }
@@ -128,23 +134,24 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
             return
         }
 
-        let contentOffsetBuffer = 2 * scrollView.frame.height
+        let contentOffsetBuffer = scrollView.bounds.height
+        let deadZoneBuffer = scrollView.bounds.height
 
         if scrollView.contentOffset.y < contentOffsetBuffer {
-
+            let newAnchorOffset = scrollView.bounds.maxY + contentOffsetBuffer - scrollView.contentSize.height + deadZoneBuffer
+            if let indexPath = photosLayout.indexPathForFirstItem(at: newAnchorOffset), indexPath.item < 0 {
+                let contentOffsetChange = photosLayout.verticalOffsetForItem(at: indexPath)
+                anchorIndex -= -indexPath.item
+                scrollView.contentOffset.y += -contentOffsetChange
+            }
         }
 
-        if scrollView.contentOffset.y > scrollView.contentSize.height - contentOffsetBuffer {
-            let markPoint = CGPoint(x: 0, y: scrollView.contentOffset.y - contentOffsetBuffer)
-            // Alternative point for cases when original one gets into space between items
-            let alternativeMarkPoint = CGPoint(x: markPoint.x, y: markPoint.y + photosLayout.minimumLineSpacing)
-
-            let markIndexPath = photosView.indexPathForItem(at: markPoint) ?? photosView.indexPathForItem(at: alternativeMarkPoint)
-
-            if let indexPath = markIndexPath, let attributes = photosView.layoutAttributesForItem(at: indexPath) {
-                markIndex += indexPath.item
-                scrollView.contentOffset.y -= attributes.frame.minY
-                photosView.reloadData()
+        if scrollView.bounds.maxY > scrollView.contentSize.height - contentOffsetBuffer {
+            let newAnchorOffset = scrollView.contentOffset.y - contentOffsetBuffer - deadZoneBuffer
+            if let indexPath = photosLayout.indexPathForFirstItem(at: newAnchorOffset) {
+                let contentOffsetChange = photosLayout.verticalOffsetForItem(at: indexPath)
+                anchorIndex += indexPath.item
+                scrollView.contentOffset.y -= contentOffsetChange
             } else {
                 fatalError()
             }
