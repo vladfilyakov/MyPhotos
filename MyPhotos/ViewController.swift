@@ -8,7 +8,6 @@
 
 import UIKit
 
-//!!! State when no images ara available and update when they become available
 //!!! Buffer size and pre-fetching asses on anchor change
 //!!! Thumbnail image size optimization?
 //!!! Keep the top image visible when changing number of columns
@@ -98,6 +97,8 @@ class ViewController: UIViewController {
         ]
 
         imageSizeSelector.selectedSegmentIndex = imageSize.index
+
+        NotificationCenter.default.addObserver(self, selector: #selector(handlePhotosDidChange), name: Photos.didChangeNotification, object: photos)
     }
 
     private func updatePhotosLayout() {
@@ -107,13 +108,17 @@ class ViewController: UIViewController {
     @objc private func handleImageSizeChanged() {
         imageSize = ImageSize.allCases[imageSizeSelector.selectedSegmentIndex]
     }
+
+    @objc private func handlePhotosDidChange() {
+        photosView.reloadData()
+    }
 }
 
 // MARK: - ViewController: UICollectionViewDataSource
 
 extension ViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 300
+        return photos.isEmpty ? 0 : 300
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

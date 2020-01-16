@@ -13,9 +13,13 @@ import UIKit
 // MARK: Photos
 
 class Photos: NSObject {
+    static let didChangeNotification = Notification.Name("Photos.didChangeNotification")
+
     private struct Constants {
         static let targetImageSize = CGSize(width: 500, height: 500)   //!!!
     }
+
+    var isEmpty: Bool { return assets.count == 0 }
 
     override init() {
         super.init()
@@ -23,7 +27,11 @@ class Photos: NSObject {
         assets = fetchAssets()
     }
 
-    private var assets: PHFetchResult<PHAsset>!
+    private var assets: PHFetchResult<PHAsset>! {
+        didSet {
+            NotificationCenter.default.post(name: Self.didChangeNotification, object: self)
+        }
+    }
     private let imageManager = PHCachingImageManager()
     private let imageRequestOptions: PHImageRequestOptions = {
         let options = PHImageRequestOptions()
@@ -65,7 +73,9 @@ extension Photos: PHPhotoLibraryChangeObserver {
     func photoLibraryDidChange(_ changeInstance: PHChange) {
         DispatchQueue.main.async {
             if let changeDetails = changeInstance.changeDetails(for: self.assets) {
-                self.assets = changeDetails.fetchResultAfterChanges
+                if !changeDetails.hasIncrementalChanges {
+                    self.assets = changeDetails.fetchResultAfterChanges
+                }
             } else {
                 self.assets = self.fetchAssets()
             }
