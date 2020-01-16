@@ -44,16 +44,40 @@ class Photos: NSObject {
     }
 
     func getThumbnailImage(at index: Int, completion: @escaping (UIImage?) -> Void) {
-        guard assets.count > 0 else {
+        guard let assetIndex = assetIndex(for: index) else {
             completion(nil)
             return
         }
 
-        let photoIndex = index % assets.count
-        let asset = assets[photoIndex]
+        let asset = assets[assetIndex]
 
         imageManager.requestImage(for: asset, targetSize: Constants.targetImageSize, contentMode: .aspectFill, options: imageRequestOptions) { image, _ in
             completion(image)
+        }
+    }
+
+    func updateCachingOfThumbnailImages(oldRange: Range<Int>, newRange: Range<Int>) {
+        let oldIndexes = assetIndexes(for: oldRange)
+        let newIndexes = assetIndexes(for: newRange)
+        stopCachingThumbnailImages(at: oldIndexes.subtracting(newIndexes))
+        startCachingThumbnailImages(at: newIndexes.subtracting(oldIndexes))
+    }
+
+    private func assetIndex(for index: Int) -> Int? {
+        if assets.count == 0 {
+            return nil
+        }
+        return index % assets.count
+    }
+
+    private func assetIndexes(for range: Range<Int>) -> IndexSet {
+        guard let start = assetIndex(for: range.startIndex), let end = assetIndex(for: range.endIndex) else {
+            return IndexSet()
+        }
+        if start <= end {
+            return IndexSet(integersIn: start..<end)
+        } else {
+            return IndexSet(integersIn: start..<assets.count).union(IndexSet(integersIn: 0..<end))
         }
     }
 
@@ -64,6 +88,14 @@ class Photos: NSObject {
             NSSortDescriptor(key: "creationDate", ascending: true)
         ]
         return PHAsset.fetchAssets(with: .image, options: options)
+    }
+
+    private func startCachingThumbnailImages(at indexes: IndexSet) {
+        imageManager.startCachingImages(for: assets.objects(at: indexes), targetSize: Constants.targetImageSize, contentMode: .aspectFill, options: imageRequestOptions)
+    }
+
+    private func stopCachingThumbnailImages(at indexes: IndexSet) {
+        imageManager.stopCachingImages(for: assets.objects(at: indexes), targetSize: Constants.targetImageSize, contentMode: .aspectFill, options: imageRequestOptions)
     }
 }
 

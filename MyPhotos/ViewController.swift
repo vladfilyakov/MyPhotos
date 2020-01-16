@@ -8,7 +8,6 @@
 
 import UIKit
 
-//!!! Buffer size and pre-fetching asses on anchor change
 //!!! Thumbnail image size optimization?
 //!!! Keep the top image visible when changing number of columns
 //!!! Animation when changing number of columns
@@ -50,6 +49,10 @@ class ViewController: UIViewController {
 
     }
 
+    private struct Constants {
+        static let photoBufferLength: Int = 300
+    }
+
     private let photos = Photos()
 
     private lazy var photosView = UICollectionView(frame: .zero, collectionViewLayout: PhotosLayout(photos: photos))
@@ -65,17 +68,24 @@ class ViewController: UIViewController {
         return segmentedControl
     }()
 
+    private var anchorIndex: Int = 0 {
+        didSet {
+            photosLayout.anchorIndex = anchorIndex
+
+            if precachesThumbnailImages {
+                photos.updateCachingOfThumbnailImages(
+                    oldRange: oldValue..<oldValue + Constants.photoBufferLength,
+                    newRange: anchorIndex..<anchorIndex + Constants.photoBufferLength
+                )
+            }
+        }
+    }
     private var imageSize: ImageSize = .small {
         didSet {
             updatePhotosLayout()
         }
     }
-
-    private var anchorIndex: Int = 0 {
-        didSet {
-            photosLayout.anchorIndex = anchorIndex
-        }
-    }
+    private var precachesThumbnailImages: Bool = false  // Setting to true degrades scrolling performance, maybe due to the large size of the buffer
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -118,7 +128,7 @@ class ViewController: UIViewController {
 
 extension ViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return photos.isEmpty ? 0 : 300
+        return photos.isEmpty ? 0 : Constants.photoBufferLength
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
