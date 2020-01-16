@@ -8,6 +8,14 @@
 
 import UIKit
 
+//!!! State when no images ara available and update when they become available
+//!!! Buffer size and pre-fetching asses on anchor change
+//!!! Thumbnail image size optimization?
+//!!! Keep the top image visible when changing number of columns
+//!!! Animation when changing number of columns
+//!!! Cancel requests for images that are not needed anymore?
+//!!! Add "Debug" mode button (affects scroll indicator, item/photo number)
+
 class ViewController: UIViewController {
     private enum ImageSize: CaseIterable {
         case extraSmall
