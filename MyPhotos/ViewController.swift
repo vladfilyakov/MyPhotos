@@ -10,14 +10,17 @@ import UIKit
 
 class ViewController: UIViewController {
     private enum ImageSize: CaseIterable {
+        case extraSmall
         case small
         case medium
         case large
 
         var numberOfColumns: Int {
             switch self {
-            case .small:
+            case .extraSmall:
                 return 4
+            case .small:
+                return 3
             case .medium:
                 return 2
             case .large:
@@ -27,6 +30,8 @@ class ViewController: UIViewController {
 
         var displayName: String {
             switch self {
+            case .extraSmall:
+                return "Extra Small"
             case .small:
                 return "Small"
             case .medium:
@@ -68,14 +73,13 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        photosView.backgroundColor = .systemBackground
         photosView.dataSource = self
         photosView.delegate = self
-        photosView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "Cell")
+        photosView.register(PhotoCell.self, forCellWithReuseIdentifier: PhotoCell.reuseIdentifier)
         photosView.frame = view.bounds
         photosView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.addSubview(photosView)
-        //!!!
-        photosView.backgroundColor = .orange
 
         updatePhotosLayout()
 
@@ -105,21 +109,19 @@ extension ViewController: UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath)
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoCell.reuseIdentifier, for: indexPath) as? PhotoCell else {
+            fatalError("Wrong cell type")
+        }
 
         //!!!
-        cell.backgroundColor = .cyan
-        let label = cell.contentView.subviews.first as? UILabel ?? {
-            let label = UILabel()
-            label.textAlignment = .center
-            label.frame = cell.contentView.bounds
-            label.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-            cell.contentView.addSubview(label)
-            return label
-        }()
-
         let actualIndex = anchorIndex + indexPath.item
-        label.text = photos.captionForItem(at: actualIndex)
+        cell.tag = actualIndex
+        cell.label.text = photos.captionForItem(at: actualIndex)
+        photos.getThumbnailImage(at: actualIndex) { [weak cell] image in
+            if cell?.tag == actualIndex && image != nil {
+                cell?.imageView.image = image
+            }
+        }
 
         return cell
     }

@@ -10,8 +10,8 @@ import UIKit
 
 class PhotosLayout: UICollectionViewFlowLayout {
     private struct Constants {
-        static let columnSpacing: CGFloat = 6
-        static let rowSpacing: CGFloat = 6
+        static let columnSpacing: CGFloat = 2
+        static let rowSpacing: CGFloat = 2
     }
 
     let photos: Photos
@@ -23,7 +23,7 @@ class PhotosLayout: UICollectionViewFlowLayout {
             }
         }
     }
-    var numberOfColumns: Int = 4 {
+    var numberOfColumns: Int = 3 {
         didSet {
             numberOfColumns = max(1, numberOfColumns)
             if numberOfColumns != oldValue {
