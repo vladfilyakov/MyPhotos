@@ -66,20 +66,36 @@
 		A5E9BB8E23C66E55008BAC1D /* MyPhotos */ = {
 			isa = PBXGroup;
 			children = (
-				A51EDBF023C80BE8004BD91A /* Photos.swift */,
+				A5FCF65123D196FE00C0F9E3 /* Model */,
+				A5FCF65323D1973300C0F9E3 /* Views */,
 				A5E9BB8F23C66E55008BAC1D /* AppDelegate.swift */,
 				A5E9BB9123C66E55008BAC1D /* SceneDelegate.swift */,
 				A5E9BB9323C66E55008BAC1D /* ViewController.swift */,
-				A5FCF64F23D13E7500C0F9E3 /* PhotoCollectionView.swift */,
-				A5FCF64D23CFE9BB00C0F9E3 /* PhotoCell.swift */,
-				A5E9BBA323C699C3008BAC1D /* PhotoCollectionLayout.swift */,
 				A5E9BBA523C6ADD7008BAC1D /* Extensions.swift */,
-				A5E9BB9523C66E55008BAC1D /* Main.storyboard */,
 				A5E9BB9823C66E56008BAC1D /* Assets.xcassets */,
 				A5E9BB9A23C66E56008BAC1D /* LaunchScreen.storyboard */,
+				A5E9BB9523C66E55008BAC1D /* Main.storyboard */,
 				A5E9BB9D23C66E56008BAC1D /* Info.plist */,
 			);
 			path = MyPhotos;
+			sourceTree = "<group>";
+		};
+		A5FCF65123D196FE00C0F9E3 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				A51EDBF023C80BE8004BD91A /* Photos.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		A5FCF65323D1973300C0F9E3 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A5FCF64F23D13E7500C0F9E3 /* PhotoCollectionView.swift */,
+				A5E9BBA323C699C3008BAC1D /* PhotoCollectionLayout.swift */,
+				A5FCF64D23CFE9BB00C0F9E3 /* PhotoCell.swift */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
