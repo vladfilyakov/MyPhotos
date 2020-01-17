@@ -40,7 +40,7 @@ class Photos: NSObject {
     }()
 
     func captionForItem(at index: Int) -> String {
-        return "\(index)"
+        return "index: \(index)\n" + "photo: \(assetIndex(for: index) ?? -1)"
     }
 
     func getThumbnailImage(at index: Int, completion: @escaping (UIImage?) -> Void) {

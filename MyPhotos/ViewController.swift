@@ -10,7 +10,6 @@ import UIKit
 
 //!!! Thumbnail image size optimization?
 //!!! Cancel requests for images that are not needed anymore?
-//!!! Add "Debug" mode button (affects scroll indicator, item/photo number)
 
 // MARK: ViewController
 
@@ -87,6 +86,13 @@ class ViewController: UIViewController {
     }
     private var precachesThumbnailImages: Bool = false  // Setting to true degrades scrolling performance, maybe due to the large size of the buffer
 
+    private var isInDebugMode: Bool = false {
+        didSet {
+            photosView.showsVerticalScrollIndicator = isInDebugMode
+            photosView.reloadData()
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -100,6 +106,7 @@ class ViewController: UIViewController {
 
         updatePhotosLayout()
 
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Debug", style: .plain, target: self, action: #selector(handleDebugButtonTap))
         toolbarItems = [
             UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
             UIBarButtonItem(customView: imageSizeSelector),
@@ -119,6 +126,10 @@ class ViewController: UIViewController {
 
     @objc private func handleImageSizeChanged() {
         imageSize = ImageSize.allCases[imageSizeSelector.selectedSegmentIndex]
+    }
+
+    @objc private func handleDebugButtonTap() {
+        isInDebugMode = !isInDebugMode
     }
 
     @objc private func handlePhotosDidChange() {
@@ -141,7 +152,10 @@ extension ViewController: UICollectionViewDataSource {
         //!!!
         let actualIndex = anchorIndex + indexPath.item
         cell.tag = actualIndex
-        cell.label.text = photos.captionForItem(at: actualIndex)
+        if isInDebugMode {
+            cell.label.isHidden = false
+            cell.label.text = photos.captionForItem(at: actualIndex) + "\nbuffer: \(indexPath.item)"
+        }
         photos.getThumbnailImage(at: actualIndex) { [weak cell] image in
             if cell?.tag == actualIndex && image != nil {
                 cell?.imageView.image = image
