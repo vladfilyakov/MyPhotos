@@ -9,7 +9,6 @@
 import UIKit
 
 //!!! Thumbnail image size optimization?
-//!!! Animation when changing number of columns
 //!!! Cancel requests for images that are not needed anymore?
 //!!! Add "Debug" mode button (affects scroll indicator, item/photo number)
 
@@ -113,12 +112,9 @@ class ViewController: UIViewController {
     }
 
     private func updatePhotosLayout() {
-        let centerItemIndexPath = photosLayout.indexPathForVisibleCenterItem()
-        photosLayout.numberOfColumns = imageSize.numberOfColumns
-        if view.window != nil {
-            photosView.layoutIfNeeded()
-            photosView.selectItem(at: centerItemIndexPath, animated: false, scrollPosition: .centeredVertically)
-        }
+        let newLayout = photosLayout.clone()
+        newLayout.numberOfColumns = imageSize.numberOfColumns
+        photosView.setCollectionViewLayout(newLayout, animated: true)
     }
 
     @objc private func handleImageSizeChanged() {
@@ -161,7 +157,7 @@ extension ViewController: UICollectionViewDataSource {
 extension ViewController: UICollectionViewDelegateFlowLayout {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         //!!!
-        if photosView.isLayingOutSubviews || scrollView.contentSize == .zero {
+        if photosView.isSettingLayout || scrollView.contentSize == .zero {
             return
         }
 

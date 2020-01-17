@@ -9,11 +9,11 @@
 import UIKit
 
 class PhotoCollectionView: UICollectionView {
-    private(set) var isLayingOutSubviews: Bool = false
+    private(set) var isSettingLayout: Bool = false
 
-    override func layoutSubviews() {
-        isLayingOutSubviews = true
-        super.layoutSubviews()
-        isLayingOutSubviews = false
+    override func setCollectionViewLayout(_ layout: UICollectionViewLayout, animated: Bool) {
+        isSettingLayout = true
+        super.setCollectionViewLayout(layout, animated: animated)
+        isSettingLayout = false
     }
 }

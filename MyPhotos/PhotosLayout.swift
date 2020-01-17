@@ -32,13 +32,20 @@ class PhotosLayout: UICollectionViewFlowLayout {
         }
     }
 
-    init(photos: Photos) {
+    required init(photos: Photos) {
         self.photos = photos
         super.init()
     }
 
     required init?(coder: NSCoder) {
         fatalError()
+    }
+
+    func clone() -> Self {
+        let layout = Self(photos: photos)
+        layout.anchorIndex = anchorIndex
+        layout.numberOfColumns = numberOfColumns
+        return layout
     }
 
     override func prepare() {
@@ -55,12 +62,6 @@ class PhotosLayout: UICollectionViewFlowLayout {
     func indexPathForFirstItem(at verticalOffset: CGFloat) -> IndexPath {
         let row = Int(floor(verticalOffset / (itemSize.height + minimumLineSpacing)))
         return IndexPath(item: max(-anchorIndex, row * numberOfColumns), section: 0)
-    }
-
-    func indexPathForVisibleCenterItem() -> IndexPath {
-        var indexPath = indexPathForFirstItem(at: collectionView?.bounds.midY ?? 0)
-        indexPath.item += numberOfColumns / 2
-        return indexPath
     }
 
     func verticalOffsetForItem(at indexPath: IndexPath) -> CGFloat {
