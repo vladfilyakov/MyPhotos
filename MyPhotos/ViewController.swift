@@ -45,63 +45,29 @@ class ViewController: UIViewController {
 
     }
 
-    private struct Constants {
-        static let photoBufferLength: Int = 300
-    }
-
     private let photos = Photos()
 
-    private lazy var photosView = PhotoCollectionView(frame: .zero, collectionViewLayout: PhotosLayout(photos: photos))
-    private var photosLayout: PhotosLayout {
-        guard let photosLayout = photosView.collectionViewLayout as? PhotosLayout else {
-            fatalError("Collection view has a wrong layout class")
-        }
-        return photosLayout
-    }
+    private lazy var photosView = PhotoCollectionView(photos: photos)
     private lazy var imageSizeSelector: UISegmentedControl = {
         let segmentedControl = UISegmentedControl(items: ImageSize.allCases.map { $0.displayName })
         segmentedControl.addTarget(self, action: #selector(handleImageSizeChanged), for: .valueChanged)
         return segmentedControl
     }()
 
-    private var anchorIndex: Int = 0 {
-        didSet {
-            photosLayout.anchorIndex = anchorIndex
-
-            if precachesThumbnailImages {
-                photos.updateCachingOfThumbnailImages(
-                    oldRange: oldValue..<oldValue + Constants.photoBufferLength,
-                    newRange: anchorIndex..<anchorIndex + Constants.photoBufferLength
-                )
-            }
-        }
-    }
     private var imageSize: ImageSize = .small {
         didSet {
-            updatePhotosLayout()
-        }
-    }
-    private var precachesThumbnailImages: Bool = false  // Setting to true degrades scrolling performance, maybe due to the large size of the buffer
-
-    private var isInDebugMode: Bool = false {
-        didSet {
-            photosView.showsVerticalScrollIndicator = isInDebugMode
-            photosView.reloadData()
+            updatePhotosView()
         }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        photosView.backgroundColor = .systemBackground
-        photosView.dataSource = self
-        photosView.delegate = self
-        photosView.register(PhotoCell.self, forCellWithReuseIdentifier: PhotoCell.reuseIdentifier)
         photosView.frame = view.bounds
         photosView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.addSubview(photosView)
 
-        updatePhotosLayout()
+        updatePhotosView()
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Debug", style: .plain, target: self, action: #selector(handleDebugButtonTap))
         toolbarItems = [
@@ -111,25 +77,10 @@ class ViewController: UIViewController {
         ]
 
         imageSizeSelector.selectedSegmentIndex = imageSize.index
-
-        NotificationCenter.default.addObserver(self, selector: #selector(handlePhotosDidChange), name: Photos.didChangeNotification, object: photos)
     }
 
-    private func updatePhotosLayout() {
-        let newLayout = photosLayout.clone()
-        newLayout.numberOfColumns = imageSize.numberOfColumns
-        newLayout.itemSizeChanged = { itemSize in
-            var imageSize = itemSize
-            imageSize.width *= UIScreen.main.scale
-            imageSize.height *= UIScreen.main.scale
-            self.photos.thumbnailImageSize = imageSize
-        }
-        // Remove handler from the old layout so it does not update photos
-        photosLayout.itemSizeChanged = nil
-        photosView.setCollectionViewLayout(newLayout, animated: true) { _ in
-            // Update thumbnail images with the new size
-            self.photosView.reloadItems(at: self.photosView.indexPathsForVisibleItems)
-        }
+    private func updatePhotosView() {
+        photosView.numberOfColumns = imageSize.numberOfColumns
     }
 
     @objc private func handleImageSizeChanged() {
@@ -137,71 +88,6 @@ class ViewController: UIViewController {
     }
 
     @objc private func handleDebugButtonTap() {
-        isInDebugMode = !isInDebugMode
-    }
-
-    @objc private func handlePhotosDidChange() {
-        photosView.reloadData()
-    }
-}
-
-// MARK: - ViewController: UICollectionViewDataSource
-
-extension ViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return photos.isEmpty ? 0 : Constants.photoBufferLength
-    }
-
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoCell.reuseIdentifier, for: indexPath) as? PhotoCell else {
-            fatalError("Wrong cell type")
-        }
-
-        //!!!
-        let actualIndex = anchorIndex + indexPath.item
-        cell.tag = actualIndex
-        if isInDebugMode {
-            cell.label.isHidden = false
-            cell.label.text = photos.captionForItem(at: actualIndex) + "\nbuffer: \(indexPath.item)"
-        }
-        photos.getThumbnailImage(at: actualIndex) { [weak cell] image in
-            if cell?.tag == actualIndex && image != nil {
-                cell?.imageView.image = image
-            }
-        }
-
-        return cell
-    }
-}
-
-// MARK: - ViewController: UICollectionViewDelegateFlowLayout
-
-extension ViewController: UICollectionViewDelegateFlowLayout {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        //!!!
-        if photosView.isSettingLayout || scrollView.contentSize == .zero {
-            return
-        }
-
-        let contentOffsetBuffer = scrollView.bounds.height
-        let deadZoneBuffer = scrollView.bounds.height
-
-        if scrollView.contentOffset.y < contentOffsetBuffer {
-            let newAnchorOffset = scrollView.bounds.maxY + contentOffsetBuffer - scrollView.contentSize.height + deadZoneBuffer
-            let indexPath = photosLayout.indexPathForFirstItem(at: newAnchorOffset)
-            if indexPath.item < 0 {
-                let contentOffsetChange = photosLayout.verticalOffsetForItem(at: indexPath)
-                anchorIndex -= -indexPath.item
-                scrollView.contentOffset.y += -contentOffsetChange
-            }
-        }
-
-        if scrollView.bounds.maxY > scrollView.contentSize.height - contentOffsetBuffer {
-            let newAnchorOffset = scrollView.contentOffset.y - contentOffsetBuffer - deadZoneBuffer
-            let indexPath = photosLayout.indexPathForFirstItem(at: newAnchorOffset)
-            let contentOffsetChange = photosLayout.verticalOffsetForItem(at: indexPath)
-            anchorIndex += indexPath.item
-            scrollView.contentOffset.y -= contentOffsetChange
-        }
+        photosView.isInDebugMode = !photosView.isInDebugMode
     }
 }
