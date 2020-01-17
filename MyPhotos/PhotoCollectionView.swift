@@ -17,8 +17,8 @@ class PhotoCollectionView: UICollectionView {
 
     var photos: Photos { return layout.photos }
 
-    var layout: PhotosLayout {
-        guard let layout = collectionViewLayout as? PhotosLayout else {
+    var layout: PhotoCollectionLayout {
+        guard let layout = collectionViewLayout as? PhotoCollectionLayout else {
             fatalError("PhotoCollectionView: wrong layout class")
         }
         return layout
@@ -61,7 +61,7 @@ class PhotoCollectionView: UICollectionView {
     }
 
     init(photos: Photos) {
-        super.init(frame: .zero, collectionViewLayout: PhotosLayout(photos: photos))
+        super.init(frame: .zero, collectionViewLayout: PhotoCollectionLayout(photos: photos))
         initLayout(layout)
         backgroundColor = .systemBackground
         showsVerticalScrollIndicator = false
@@ -89,7 +89,7 @@ class PhotoCollectionView: UICollectionView {
         isSettingLayout = false
     }
 
-    private func initLayout(_ layout: PhotosLayout) {
+    private func initLayout(_ layout: PhotoCollectionLayout) {
         layout.itemSizeChanged = { [unowned layout] itemSize in
             var imageSize = itemSize
             imageSize.width *= UIScreen.main.scale

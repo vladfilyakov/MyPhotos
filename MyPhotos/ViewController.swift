@@ -47,7 +47,7 @@ class ViewController: UIViewController {
 
     private let photos = Photos()
 
-    private lazy var photosView = PhotoCollectionView(photos: photos)
+    private lazy var photoCollectionView = PhotoCollectionView(photos: photos)
     private lazy var imageSizeSelector: UISegmentedControl = {
         let segmentedControl = UISegmentedControl(items: ImageSize.allCases.map { $0.displayName })
         segmentedControl.addTarget(self, action: #selector(handleImageSizeChanged), for: .valueChanged)
@@ -56,18 +56,18 @@ class ViewController: UIViewController {
 
     private var imageSize: ImageSize = .small {
         didSet {
-            updatePhotosView()
+            updatePhotoCollectionView()
         }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        photosView.frame = view.bounds
-        photosView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        view.addSubview(photosView)
+        photoCollectionView.frame = view.bounds
+        photoCollectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        view.addSubview(photoCollectionView)
 
-        updatePhotosView()
+        updatePhotoCollectionView()
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Debug", style: .plain, target: self, action: #selector(handleDebugButtonTap))
         toolbarItems = [
@@ -79,8 +79,8 @@ class ViewController: UIViewController {
         imageSizeSelector.selectedSegmentIndex = imageSize.index
     }
 
-    private func updatePhotosView() {
-        photosView.numberOfColumns = imageSize.numberOfColumns
+    private func updatePhotoCollectionView() {
+        photoCollectionView.numberOfColumns = imageSize.numberOfColumns
     }
 
     @objc private func handleImageSizeChanged() {
@@ -88,6 +88,6 @@ class ViewController: UIViewController {
     }
 
     @objc private func handleDebugButtonTap() {
-        photosView.isInDebugMode = !photosView.isInDebugMode
+        photoCollectionView.isInDebugMode = !photoCollectionView.isInDebugMode
     }
 }

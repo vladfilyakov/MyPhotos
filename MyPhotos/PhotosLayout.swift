@@ -1,5 +1,5 @@
 //
-//  PhotosLayout.swift
+//  PhotoCollectionLayout.swift
 //  MyPhotos
 //
 //  Created by Vladislav Filyakov on 1/8/20.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PhotosLayout: UICollectionViewFlowLayout {
+class PhotoCollectionLayout: UICollectionViewFlowLayout {
     private struct Constants {
         static let columnSpacing: CGFloat = 2
         static let rowSpacing: CGFloat = 2
