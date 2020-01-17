@@ -8,9 +8,6 @@
 
 import UIKit
 
-//!!! Thumbnail image size optimization?
-//!!! Cancel requests for images that are not needed anymore?
-
 // MARK: ViewController
 
 class ViewController: UIViewController {
@@ -121,7 +118,18 @@ class ViewController: UIViewController {
     private func updatePhotosLayout() {
         let newLayout = photosLayout.clone()
         newLayout.numberOfColumns = imageSize.numberOfColumns
-        photosView.setCollectionViewLayout(newLayout, animated: true)
+        newLayout.itemSizeChanged = { itemSize in
+            var imageSize = itemSize
+            imageSize.width *= UIScreen.main.scale
+            imageSize.height *= UIScreen.main.scale
+            self.photos.thumbnailImageSize = imageSize
+        }
+        // Remove handler from the old layout so it does not update photos
+        photosLayout.itemSizeChanged = nil
+        photosView.setCollectionViewLayout(newLayout, animated: true) { _ in
+            // Update thumbnail images with the new size
+            self.photosView.reloadItems(at: self.photosView.indexPathsForVisibleItems)
+        }
     }
 
     @objc private func handleImageSizeChanged() {

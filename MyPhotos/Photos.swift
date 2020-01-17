@@ -12,14 +12,14 @@ import UIKit
 
 // MARK: Photos
 
+// TODO: Cancel requests for thumbnail images that are not needed anymore?
+
 class Photos: NSObject {
     static let didChangeNotification = Notification.Name("Photos.didChangeNotification")
 
-    private struct Constants {
-        static let targetImageSize = CGSize(width: 500, height: 500)   //!!!
-    }
-
     var isEmpty: Bool { return assets.count == 0 }
+
+    var thumbnailImageSize = CGSize(width: 500, height: 500)
 
     override init() {
         super.init()
@@ -51,7 +51,7 @@ class Photos: NSObject {
 
         let asset = assets[assetIndex]
 
-        imageManager.requestImage(for: asset, targetSize: Constants.targetImageSize, contentMode: .aspectFill, options: imageRequestOptions) { image, _ in
+        imageManager.requestImage(for: asset, targetSize: thumbnailImageSize, contentMode: .aspectFill, options: imageRequestOptions) { image, _ in
             completion(image)
         }
     }
@@ -91,11 +91,11 @@ class Photos: NSObject {
     }
 
     private func startCachingThumbnailImages(at indexes: IndexSet) {
-        imageManager.startCachingImages(for: assets.objects(at: indexes), targetSize: Constants.targetImageSize, contentMode: .aspectFill, options: imageRequestOptions)
+        imageManager.startCachingImages(for: assets.objects(at: indexes), targetSize: thumbnailImageSize, contentMode: .aspectFill, options: imageRequestOptions)
     }
 
     private func stopCachingThumbnailImages(at indexes: IndexSet) {
-        imageManager.stopCachingImages(for: assets.objects(at: indexes), targetSize: Constants.targetImageSize, contentMode: .aspectFill, options: imageRequestOptions)
+        imageManager.stopCachingImages(for: assets.objects(at: indexes), targetSize: thumbnailImageSize, contentMode: .aspectFill, options: imageRequestOptions)
     }
 }
 

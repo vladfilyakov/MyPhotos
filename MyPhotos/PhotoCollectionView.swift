@@ -25,4 +25,10 @@ class PhotoCollectionView: UICollectionView {
         super.setCollectionViewLayout(layout, animated: animated)
         isSettingLayout = false
     }
+
+    override func setCollectionViewLayout(_ layout: UICollectionViewLayout, animated: Bool, completion: ((Bool) -> Void)? = nil) {
+        isSettingLayout = true
+        super.setCollectionViewLayout(layout, animated: animated, completion: completion)
+        isSettingLayout = false
+    }
 }

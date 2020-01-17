@@ -32,6 +32,15 @@ class PhotosLayout: UICollectionViewFlowLayout {
         }
     }
 
+    override var itemSize: CGSize {
+        didSet {
+            if itemSize != oldValue {
+                itemSizeChanged?(itemSize)
+            }
+        }
+    }
+    var itemSizeChanged: ((CGSize) -> Void)?
+
     required init(photos: Photos) {
         self.photos = photos
         super.init()
