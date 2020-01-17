@@ -17,11 +17,12 @@
 		A5E9BBA423C699C3008BAC1D /* PhotosLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E9BBA323C699C3008BAC1D /* PhotosLayout.swift */; };
 		A5E9BBA623C6ADD7008BAC1D /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E9BBA523C6ADD7008BAC1D /* Extensions.swift */; };
 		A5FCF64E23CFE9BB00C0F9E3 /* PhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5FCF64D23CFE9BB00C0F9E3 /* PhotoCell.swift */; };
+		A5FCF65023D13E7500C0F9E3 /* PhotoCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5FCF64F23D13E7500C0F9E3 /* PhotoCollectionView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		A51EDBF023C80BE8004BD91A /* Photos.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photos.swift; sourceTree = "<group>"; };
-		A5E9BB8C23C66E55008BAC1D /* MyPhotos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyPhotos.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A5E9BB8C23C66E55008BAC1D /* My Photos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "My Photos.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5E9BB8F23C66E55008BAC1D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A5E9BB9123C66E55008BAC1D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		A5E9BB9323C66E55008BAC1D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -32,6 +33,7 @@
 		A5E9BBA323C699C3008BAC1D /* PhotosLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosLayout.swift; sourceTree = "<group>"; };
 		A5E9BBA523C6ADD7008BAC1D /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		A5FCF64D23CFE9BB00C0F9E3 /* PhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCell.swift; sourceTree = "<group>"; };
+		A5FCF64F23D13E7500C0F9E3 /* PhotoCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCollectionView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,7 +58,7 @@
 		A5E9BB8D23C66E55008BAC1D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A5E9BB8C23C66E55008BAC1D /* MyPhotos.app */,
+				A5E9BB8C23C66E55008BAC1D /* My Photos.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -68,6 +70,7 @@
 				A5E9BB8F23C66E55008BAC1D /* AppDelegate.swift */,
 				A5E9BB9123C66E55008BAC1D /* SceneDelegate.swift */,
 				A5E9BB9323C66E55008BAC1D /* ViewController.swift */,
+				A5FCF64F23D13E7500C0F9E3 /* PhotoCollectionView.swift */,
 				A5FCF64D23CFE9BB00C0F9E3 /* PhotoCell.swift */,
 				A5E9BBA323C699C3008BAC1D /* PhotosLayout.swift */,
 				A5E9BBA523C6ADD7008BAC1D /* Extensions.swift */,
@@ -96,7 +99,7 @@
 			);
 			name = MyPhotos;
 			productName = Photos;
-			productReference = A5E9BB8C23C66E55008BAC1D /* MyPhotos.app */;
+			productReference = A5E9BB8C23C66E55008BAC1D /* My Photos.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -155,6 +158,7 @@
 				A5E9BBA623C6ADD7008BAC1D /* Extensions.swift in Sources */,
 				A5E9BBA423C699C3008BAC1D /* PhotosLayout.swift in Sources */,
 				A5E9BB9423C66E55008BAC1D /* ViewController.swift in Sources */,
+				A5FCF65023D13E7500C0F9E3 /* PhotoCollectionView.swift in Sources */,
 				A5E9BB9023C66E55008BAC1D /* AppDelegate.swift in Sources */,
 				A5E9BB9223C66E55008BAC1D /* SceneDelegate.swift in Sources */,
 			);
@@ -308,7 +312,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.vladfilyakov.MyPhotos;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "My Photos";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -326,7 +330,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.vladfilyakov.MyPhotos;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "My Photos";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

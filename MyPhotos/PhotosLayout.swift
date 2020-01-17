@@ -52,9 +52,15 @@ class PhotosLayout: UICollectionViewFlowLayout {
         itemSize = CGSize(width: itemWidth, height: itemWidth)
     }
 
-    func indexPathForFirstItem(at verticalOffset: CGFloat) -> IndexPath? {
+    func indexPathForFirstItem(at verticalOffset: CGFloat) -> IndexPath {
         let row = Int(floor(verticalOffset / (itemSize.height + minimumLineSpacing)))
         return IndexPath(item: max(-anchorIndex, row * numberOfColumns), section: 0)
+    }
+
+    func indexPathForVisibleCenterItem() -> IndexPath {
+        var indexPath = indexPathForFirstItem(at: collectionView?.bounds.midY ?? 0)
+        indexPath.item += numberOfColumns / 2
+        return indexPath
     }
 
     func verticalOffsetForItem(at indexPath: IndexPath) -> CGFloat {

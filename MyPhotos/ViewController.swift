@@ -9,10 +9,11 @@
 import UIKit
 
 //!!! Thumbnail image size optimization?
-//!!! Keep the top image visible when changing number of columns
 //!!! Animation when changing number of columns
 //!!! Cancel requests for images that are not needed anymore?
 //!!! Add "Debug" mode button (affects scroll indicator, item/photo number)
+
+// MARK: ViewController
 
 class ViewController: UIViewController {
     private enum ImageSize: CaseIterable {
@@ -55,7 +56,7 @@ class ViewController: UIViewController {
 
     private let photos = Photos()
 
-    private lazy var photosView = UICollectionView(frame: .zero, collectionViewLayout: PhotosLayout(photos: photos))
+    private lazy var photosView = PhotoCollectionView(frame: .zero, collectionViewLayout: PhotosLayout(photos: photos))
     private var photosLayout: PhotosLayout {
         guard let photosLayout = photosView.collectionViewLayout as? PhotosLayout else {
             fatalError("Collection view has a wrong layout class")
@@ -112,7 +113,12 @@ class ViewController: UIViewController {
     }
 
     private func updatePhotosLayout() {
+        let centerItemIndexPath = photosLayout.indexPathForVisibleCenterItem()
         photosLayout.numberOfColumns = imageSize.numberOfColumns
+        if view.window != nil {
+            photosView.layoutIfNeeded()
+            photosView.selectItem(at: centerItemIndexPath, animated: false, scrollPosition: .centeredVertically)
+        }
     }
 
     @objc private func handleImageSizeChanged() {
@@ -155,7 +161,7 @@ extension ViewController: UICollectionViewDataSource {
 extension ViewController: UICollectionViewDelegateFlowLayout {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         //!!!
-        if scrollView.contentSize == .zero {
+        if photosView.isLayingOutSubviews || scrollView.contentSize == .zero {
             return
         }
 
@@ -164,7 +170,8 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
 
         if scrollView.contentOffset.y < contentOffsetBuffer {
             let newAnchorOffset = scrollView.bounds.maxY + contentOffsetBuffer - scrollView.contentSize.height + deadZoneBuffer
-            if let indexPath = photosLayout.indexPathForFirstItem(at: newAnchorOffset), indexPath.item < 0 {
+            let indexPath = photosLayout.indexPathForFirstItem(at: newAnchorOffset)
+            if indexPath.item < 0 {
                 let contentOffsetChange = photosLayout.verticalOffsetForItem(at: indexPath)
                 anchorIndex -= -indexPath.item
                 scrollView.contentOffset.y += -contentOffsetChange
@@ -173,13 +180,10 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
 
         if scrollView.bounds.maxY > scrollView.contentSize.height - contentOffsetBuffer {
             let newAnchorOffset = scrollView.contentOffset.y - contentOffsetBuffer - deadZoneBuffer
-            if let indexPath = photosLayout.indexPathForFirstItem(at: newAnchorOffset) {
-                let contentOffsetChange = photosLayout.verticalOffsetForItem(at: indexPath)
-                anchorIndex += indexPath.item
-                scrollView.contentOffset.y -= contentOffsetChange
-            } else {
-                fatalError()
-            }
+            let indexPath = photosLayout.indexPathForFirstItem(at: newAnchorOffset)
+            let contentOffsetChange = photosLayout.verticalOffsetForItem(at: indexPath)
+            anchorIndex += indexPath.item
+            scrollView.contentOffset.y -= contentOffsetChange
         }
     }
 }
